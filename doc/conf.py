@@ -6,10 +6,10 @@ import torndb
 
 master_doc = "index"
 
-project = "Torndb"
-copyright = "2011, Facebook"
+project = "Mandb"
+copyright = "2016, Kehr"
 
-version = release = torndb.version
+version = release = mandb.version
 
 extensions = ["sphinx.ext.autodoc", "sphinx.ext.coverage", "sphinx.ext.viewcode"]
 

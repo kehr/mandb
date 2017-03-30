@@ -1,35 +1,64 @@
-Torndb
+Mandb
 ======
-
-Unmaintained
-------------
-
-This package is not actively maintained, and since it exists primarily
-for backwards compatibility with the module provided in Tornado prior
-to version 3.0, I do not intend to make major changes or merge pull
-requests that do so.  New projects are encouraged to choose a different
-database package. Anyone interested in producing an updated version of
-`torndb` is welcome to create a fork (under a new name)
 
 Description
 -----------
+Mandb 是从 `Torndb` fork 过来的。`Torndb`不支持数据库连接池，但其对数据库操作的封装很好，于是我在其基础上
+拓展了`Mandb`，并支持 SQLite3。
 
-Torndb is a simple wrapper around `MySQLdb` that originally appeared
-in Tornado (http://www.tornadoweb.org).  It is being moved into
-a separate package for Tornado 3.0.
-
-Limitations
------------
-
-Torndb does not support Python 3, or any database drivers other than
-`MySQLdb` or `pymysql`.
 
 Installation
 ------------
 
-``pip install torndb``
+``pip install mandb``
 
-Documentation
+Usage
 -------------
 
-http://torndb.readthedocs.org
+```python
+
+from mandb import SqliteDatabase
+from mandb import MySQLDatabase
+
+## for sqlite
+db = SqliteDatabase('test.db')
+## for MySQL
+db = MySQLDatabase(
+    host='localhost',
+    port=3306,
+    user='root',
+    passwd='passwd',
+    db='test_db',
+    chartset='utf8'
+    )
+
+## 1. Query data
+print db.query('SELECT * FROM `sometable`')
+# or
+for row in db.query('SELECT * FROM `sometable`'):
+    print row
+## 2. Update data
+print db.insert('INSERT INTO `sometable` VALUES(1,2,3,4)')
+print db.update('UPDATE `sometable` SET var1=10 WHERE id=1')
+print db.delete('DELETE * FROM `sometable`')
+
+```
+如果你在用 DBUtils 提供的数据库连接池:
+
+```python
+import MySQLdb
+from mandb import MySQLDatabase
+from DBUtils.PooledDB import PooledDB
+
+pdb = PooledDB(MySQLdb,
+            mincached=5,
+            host='localhost',
+            port=3306,
+            user='root',
+            passwd='passwd',
+            db='test_db',
+            chartset='utf8')
+db = MySQLDatabase(pdb.connection())
+...
+```
+

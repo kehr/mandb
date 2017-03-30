@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 #
-# Copyright 2012 Facebook
+# Copyright 2016 Kehr
 #
 # Licensed under the Apache License, Version 2.0 (the "License"); you may
 # not use this file except in compliance with the License. You may obtain
@@ -14,17 +14,26 @@
 # License for the specific language governing permissions and limitations
 # under the License.
 
-import distutils.core
+import sys
 
-version = "0.3"
+try:
+    from distutils.core import setup
+except ImportError:
+    from setuptools import setup
 
-distutils.core.setup(
-    name="torndb",
+from mandb import version
+
+if sys.argv[-1] == 'publish':
+    os.system('python setup.py sdist upload')
+    sys.exit()
+
+setup(
+    name="mandb",
     version=version,
-    py_modules=["torndb"],
-    author="Facebook",
-    author_email="python-tornado@googlegroups.com",
-    url="https://github.com/bdarnell/torndb",
+    py_modules=["mandb"],
+    author="Kehr",
+    author_email="kehr.china@gmail.com",
+    url="https://github.com/kehr/mandb",
     license="http://www.apache.org/licenses/LICENSE-2.0",
-    description="A lightweight wrapper around MySQLdb.  Originally part of the Tornado framework.",
+    description="A lightweight wrapper around multiple databases. Database connection pool supported by DBUtils.",
     )
