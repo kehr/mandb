@@ -1,11 +1,9 @@
 Mandb
 ======
 
-Description
------------
-Mandb 是从 `Torndb` fork 过来的。`Torndb`不支持数据库连接池，但其对数据库操作的封装很好，于是我在其基础上
-拓展了`Mandb`，并支持 SQLite3。
+Mandb 是从 `Torndb` fork 过来的。
 
+`Torndb` 只支持 MySQL 且不支持数据库连接池，但对数据库操作封装很好，于是便在其基础上拓展了`Mandb`，并支持 SQLite3。
 
 Installation
 ------------
