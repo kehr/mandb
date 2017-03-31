@@ -45,6 +45,10 @@ class Database(object):
         pdb = PooledDB(MySQLdb, host='localhost', port=3306, db='test_db',
                     user='root', passwd='passwd', mincached=5, charset='utf8')
         db = Database(pdb.connection())
+        db.query('SELECT ...')
+        db.insert('INSERT INTO ...')
+        db.update('UPDATE ...')
+        db.delete('DELETE ...')
         ...
 
     Otherwise, please use `MySQLDatabase` or `SqliteDatabase` to create a new connection.
