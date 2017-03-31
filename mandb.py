@@ -3,15 +3,15 @@
 # Copyright 2016 Kehr<kehr.china@gmail.com>
 # Reference: torndb, DBUtils
 
-"""A lightweight wrapper around MySQLdb, sqlite3.
+"""`Mandb` is a lightweight wrapper around `MySQLdb` and `sqlite3`.
 
-Mandb can be used with connection pool which like
-DBUtils and has same api like torndb.
+    This lib is inspired by `torndb` and `DBUtils`. It supports DBUtils to manage your exists
+    connection. If you has any good ideas, please contact me <kehr.china@gmail.com>
+
 """
 
 import sqlite3
 import MySQLdb
-import logging
 import threading
 
 version = '0.1'
@@ -33,8 +33,28 @@ class Row(dict):
 
 
 class Database(object):
-    """Base database operation"""
+    """This class provide a series of database base operation. It an manage your
+    database connection, if you already has a database connection.
+
+    Example::
+
+        import MySQLdb
+        from mandb import Database
+        from DBUtils.PooledDB import PooledDB
+
+        pdb = PooledDB(MySQLdb, host='localhost', port=3306, db='test_db',
+                    user='root', passwd='passwd', mincached=5, charset='utf8')
+        db = Database(pdb.connection())
+        ...
+
+    Otherwise, please use `MySQLDatabase` or `SqliteDatabase` to create a new connection.
+    """
     def __init__(self, connection=None, **kwargs):
+        """
+        Args:
+            :connection: Specify an exists database connection.
+            :kwargs: Connection parameters.
+        """
         self.connection = connection
         self.kwargs = kwargs
         self._closed = True
@@ -50,6 +70,13 @@ class Database(object):
             self._closed = False
             if self.connection is None:
                 self.connection = self._connect()
+            # Ensure auto commit
+            if hasattr(self.connection, 'autocommit'):
+                self.connection.autocommit(True)
+            # Autocommit setting for DBUtils
+            elif hasattr(self.connection, '_con') and hasattr(self.connection._con, '_con'):
+                self.connection._con._con.autocommit(True)
+
 
     def close(self):
         """Closes this database connection"""
@@ -99,11 +126,15 @@ class Database(object):
             return rows[0]
 
     def execute(self, sql, *args, **kwargs):
-        """Executes the given sql, returning the lastrowid from the sql."""
+        """Executes the given sql, returning the lastrowid."""
         return self.execute_lastrowid(sql, *args, **kwargs)
 
+    def rollback(self):
+        """Rolls backs the current transaction"""
+        self.connection.rollback()
+
     def execute_lastrowid(self, sql, *args, **kwargs):
-        """Executes the given sql, returning the lastrowid from the sql."""
+        """Executes the given sql, returning the lastrowid."""
         cursor = self._cursor()
         try:
             self._execute(cursor, sql, args, kwargs)
@@ -112,7 +143,7 @@ class Database(object):
             cursor.close()
 
     def execute_rowcount(self, sql, *args, **kwargs):
-        """Executes the given query, returning the rowcount from the query."""
+        """Executes the given query, returning the rowcount."""
         cursor = self._cursor()
         try:
             self._execute(cursor, sql, args, kwargs)
@@ -149,22 +180,45 @@ class Database(object):
     insertmany = executemany_lastrowid
 
     def _connect(self):
+        """Connect to Database(eg. mysql, sqlite). Need rewrite"""
         raise NotImplementedError
 
     def _cursor(self):
-        raise NotImplementedError
+        """Get the cursor of connection.
+
+        Default use DB-API standard.
+        """
+        return self.connection.cursor()
 
     def _execute(self, cursor, sql, args, kwargs):
-        raise NotImplementedError
+        """execute sql by cursor.
+
+        Default use DB-API standard.
+        """
+        return cursor.execute(sql, kwargs or args)
 
 
 class SqliteDatabase(Database):
-    """Database wrapper for Sqlite3"""
-    def __init__(self, connection=None, *args, **kwargs):
-        if 'database' not in kwargs:
-            raise Exception('SqliteDatabase require `database` argument')
-        self.database = kwargs.pop('database')
-        super(SqliteDatabase, self).__init__(connection, *args, **kwargs)
+    """Subclass of `Database`, wrapper for Sqlite3
+
+    usage::
+
+        from mandb import SqliteDatabase
+
+        db = SqliteDatabase(db='test.db')
+        db.query('SELECT ...')
+        db.insert('INSERT INTO ...')
+        db.update('UPDATE ...')
+        db.delete('DELETE ...')
+        ...
+    """
+    def __init__(self, db, *args, **kwargs):
+        """
+        Args:
+            :db: The sqlite database file.
+        """
+        self.database = db
+        super(SqliteDatabase, self).__init__(*args, **kwargs)
 
     def _connect(self):
         conn = sqlite3.connect(self.database, **self.kwargs)
@@ -172,25 +226,24 @@ class SqliteDatabase(Database):
         conn.isolation_level = None
         return conn
 
-    def _cursor(self):
-        return self.connection.cursor()
-
-    def _execute(self, cursor, sql, args, kwargs):
-        return cursor.execute(sql, kwargs or args)
-
 
 class MySQLDatabase(Database):
-    """Database wrapper for MySQL"""
-    def __init__(self, connection=None, *args, **kwargs):
-        super(MySQLDatabase, self).__init__(connection, *args, **kwargs)
+    """Subclass of `Database`, wrapper for MySQL
+
+    usage::
+
+        from mandb import MySQLDatabase
+
+        db = MySQLDatabase(host='localhost', port=3306,  db='test',
+                           user='root', passwd='123456', charset='utf8')
+        db.query('SELECT ...')
+        db.insert('INSERT INTO ...')
+        db.update('UPDATE ...')
+        db.delete('DELETE ...')
+        ...
+    """
+    def __init__(self, *args, **kwargs):
+        super(MySQLDatabase, self).__init__(*args, **kwargs)
 
     def _connect(self):
-        conn = MySQLdb.connect(**self.kwargs)
-        conn.autocommit(True)
-        return conn
-
-    def _cursor(self):
-        return self.connection.cursor()
-
-    def _execute(self, cursor, sql, args, kwargs):
-        return cursor.execute(sql, kwargs or args)
+        return MySQLdb.connect(**self.kwargs)

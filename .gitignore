@@ -1,6 +1,7 @@
 *.pyc
 *.pyo
 *~
+test.*
 /build/
 /dist/
 .tox/
