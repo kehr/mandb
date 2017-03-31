@@ -18,8 +18,6 @@ import os
 del os.link
 import sys
 
-
-
 try:
     from distutils.core import setup
 except ImportError:
@@ -27,8 +25,9 @@ except ImportError:
 
 from mandb import version
 
+
 if sys.argv[-1] == 'publish':
-    os.system('python setup.py sdist upload')
+    os.system('python setup.py sdist register upload')
     sys.exit()
 
 setup(
@@ -39,7 +38,7 @@ setup(
     author_email='kehr.china@gmail.com',
     url='https://github.com/kehr/mandb',
     license='http://www.apache.org/licenses/LICENSE-2.0',
-    description='A lightweight wrapper around multiple databases. Can manage your database connection and suport connection pool.',
+    description='Mandb is a lightweight wrapper around MySQLdb and sqlite3.',
     keywords=['mysql', 'orm', 'connection pool', 'sqlite', 'torndb', 'database'],
     install_requires=[
         'MySQL-python == 1.2.5'
