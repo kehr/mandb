@@ -16,8 +16,8 @@
 
 import os
 del os.link
-
 import sys
+
 
 
 try:
@@ -45,11 +45,7 @@ setup(
         'MySQL-python == 1.2.5'
     ],
     classifiers=[
-        # How mature is this project? Common values are
-        #   3 - Alpha
-        #   4 - Beta
-        #   5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Topic :: Utilities',
         'Topic :: Software Development',
