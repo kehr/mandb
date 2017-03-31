@@ -1,5 +1,6 @@
 Mandb
 ======
+![Bower version](http://mandb.readthedocs.io/en/latest/?badge=latest)
 
 This lib is inspired by `torndb` and `DBUtils`. It supports DBUtils to manage your exists
 connection. If you has any good ideas, please contact me <kehr.china@gmail.com>
@@ -14,4 +15,4 @@ pip install mandb
 Usage
 -------------
 
-Read the doc
+Read the doc: http://mandb.readthedocs.io/
