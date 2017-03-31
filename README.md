@@ -45,7 +45,7 @@ print db.delete('DELETE * FROM `sometable`')
 
 ```python
 import MySQLdb
-from mandb import MySQLDatabase
+from mandb import Database
 from DBUtils.PooledDB import PooledDB
 
 pdb = PooledDB(MySQLdb,
@@ -56,7 +56,7 @@ pdb = PooledDB(MySQLdb,
             passwd='passwd',
             db='test_db',
             charset='utf8')
-db = MySQLDatabase(pdb.connection())
+db = Database(pdb.connection())
 ...
 ```
 
