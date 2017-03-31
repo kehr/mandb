@@ -27,7 +27,7 @@ db = MySQLDatabase(
     user='root',
     passwd='passwd',
     db='test_db',
-    chartset='utf8'
+    charset='utf8'
     )
 
 ## 1. Query data
@@ -55,7 +55,7 @@ pdb = PooledDB(MySQLdb,
             user='root',
             passwd='passwd',
             db='test_db',
-            chartset='utf8')
+            charset='utf8')
 db = MySQLDatabase(pdb.connection())
 ...
 ```
