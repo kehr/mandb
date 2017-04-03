@@ -33,8 +33,8 @@ class Row(dict):
 
 
 class Database(object):
-    """This class provide a series of database base operation. It an manage your
-    database connection, if you already has a database connection.
+    """This class provide a series of base database operations. It can manage your
+    connection, if you already has one.
 
     Example::
 
