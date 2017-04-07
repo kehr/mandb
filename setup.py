@@ -23,16 +23,13 @@ try:
 except ImportError:
     from setuptools import setup
 
-from mandb import version
-
-
 if sys.argv[-1] == 'publish':
     os.system('python setup.py sdist register upload')
     sys.exit()
 
 setup(
     name='mandb',
-    version=version,
+    version='0.1.3',
     py_modules=['mandb'],
     author='Kehr',
     author_email='kehr.china@gmail.com',

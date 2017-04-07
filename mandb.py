@@ -14,8 +14,8 @@ import sqlite3
 import MySQLdb
 import threading
 
-version = '0.1.2'
-version_info = (0, 1, 2, 0)
+version = '0.1.3'
+version_info = (0, 1, 3, 0)
 
 
 class MandbEception(Exception):
