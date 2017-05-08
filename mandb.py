@@ -199,7 +199,7 @@ class Database(object):
 
         Default use DB-API standard.
         """
-        return cursor.execute(sql, kwargs or args)
+        return cursor.execute(sql, kwargs or args or None)
 
 
 class SqliteDatabase(Database):

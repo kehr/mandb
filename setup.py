@@ -29,7 +29,7 @@ if sys.argv[-1] == 'publish':
 
 setup(
     name='mandb',
-    version='0.1.3',
+    version='0.1.4',
     py_modules=['mandb'],
     author='Kehr',
     author_email='kehr.china@gmail.com',

@@ -7,6 +7,11 @@ Mandb Documentation
 Release history
 ===============
 
+Version 0.1.4, May 08 2017
+--------------------------
+
+* Bug fix: `Database._execute` does not format sql by args when kwargs and args are empty.
+
 Version 0.1, Mar 31 2017
 ------------------------
 
